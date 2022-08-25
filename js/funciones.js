@@ -9,9 +9,10 @@ const passwordLogin = document.getElementById("passwordLogin");
 const emailLogin = document.getElementById("emailLogin");
 const formularioLogin = document.getElementById("formularioLogin");
 
-
-let listaUsuarios = []
-
+let listaUsuarios = [];
+if(localStorage.getItem("usuarios")) {
+    listaUsuarios = JSON.parse(localStorage.getItem("usuarios"))
+}
 class Usuario {
     constructor(nombre, email, password) {
         this.nombre = nombre;
@@ -42,10 +43,9 @@ botonRegistroUsuario.onclick = () => {
         return;
     }
     listaUsuarios.push({ nombre: usuario.nombre, email: usuario.email, password: usuario.password });
-    localStorage.setItem("usuarios", JSON.stringify())
+    localStorage.setItem("usuarios", JSON.stringify(listaUsuarios))
     mensajeRegistro.innerHTML = "Usuario registrado con exito";
     console.log(listaUsuarios);
-    localStorage.setItem("usuario", JSON.stringify(usuario));
     formularioRegistro.reset();
 
 }
@@ -80,6 +80,8 @@ botonLogin.onclick = () => {
         mensajeLogin.innerHTML = `El password es incorrecto`;
         return;
     }
+
+    localStorage.setItem("usuarioActual", JSON.stringify(usuario))
 
     window.location.href = "../index.html";
 }
