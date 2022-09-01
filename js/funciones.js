@@ -26,6 +26,12 @@ botonRegistroUsuario.onclick = () => {
 
     mensajeRegistro.innerHTML = "";
     if (!nombre.value || !email.value || !password.value) {
+        Swal.fire({
+            title: 'Error!',
+            text: 'Ingrese todos los datos solicitados',
+            icon: 'error',
+            confirmButtonText: 'Continuar'
+        })    
         mensajeRegistro.innerHTML = "Formulario Vacio";
         return;
     }
@@ -47,7 +53,6 @@ botonRegistroUsuario.onclick = () => {
     mensajeRegistro.innerHTML = "Usuario registrado con exito";
     console.log(listaUsuarios);
     formularioRegistro.reset();
-
 }
 
 function validarUsuario(usuario) {
