@@ -32,7 +32,6 @@ botonRegistroUsuario.onclick = () => {
             icon: 'error',
             confirmButtonText: 'Continuar'
         })    
-        mensajeRegistro.innerHTML = "Formulario Vacio";
         return;
     }
     const usuario = new Usuario(nombre.value, email.value, password.value);
@@ -40,17 +39,32 @@ botonRegistroUsuario.onclick = () => {
     console.log(usuario);
 
     if (usuario.password !== passwordConfirmado.value) {
-        mensajeRegistro.innerHTML = "Los passwords deben coincidir";
+        Swal.fire({
+            title: 'Error!',
+            text: 'Los passwords deben coincidir',
+            icon: 'error',
+            confirmButtonText: 'Continuar'
+        }) 
         return;
+        
     }
 
     if (validar) {
-        mensajeRegistro.innerHTML = `El usuario ${usuario.email} ya existe`;
+        Swal.fire({
+            title: 'Error!',
+            text: `El usuario ${usuario.email} ya existe`,
+            icon: 'error',
+            confirmButtonText: 'Continuar'
+        }) 
         return;
     }
     listaUsuarios.push({ nombre: usuario.nombre, email: usuario.email, password: usuario.password });
     localStorage.setItem("usuarios", JSON.stringify(listaUsuarios))
-    mensajeRegistro.innerHTML = "Usuario registrado con exito";
+    Swal.fire({
+        text: "Usuario registrado con exito",
+        icon: 'success',
+        confirmButtonText: 'Continuar'
+    }) 
     console.log(listaUsuarios);
     formularioRegistro.reset();
 }
@@ -72,17 +86,32 @@ botonLogin.onclick = () => {
     console.log(validar);
 
     if (listaUsuarios.length === 0) {
-        mensajeLogin.innerHTML = "No hay usuario registrado";
+        Swal.fire({
+            title: 'Error!',
+            text: "No hay usuario registrado",
+            icon: 'error',
+            confirmButtonText: 'Continuar'
+        })
         return;
     }
 
     if (!validar) {
-        mensajeLogin.innerHTML = `El usuario ${usuario.email} no existe`;
+        Swal.fire({
+            title: 'Error!',
+            text: `El usuario ${usuario.email} no existe`,
+            icon: 'error',
+            confirmButtonText: 'Continuar'
+        })
         return;
     }
 
     if (validar.password !== usuario.password) {
-        mensajeLogin.innerHTML = `El password es incorrecto`;
+        Swal.fire({
+            title: 'Error!',
+            text: `El password es incorrecto`,
+            icon: 'error',
+            confirmButtonText: 'Continuar'
+        })
         return;
     }
 
