@@ -10,6 +10,19 @@ const emailLogin = document.getElementById("emailLogin");
 const formularioLogin = document.getElementById("formularioLogin");
 
 let listaUsuarios = [];
+let listaUsuariosJson = [];
+
+function obtenerUsuarios(){
+    const URLJSON = "../js/usuarios.json"
+    fetch(URLJSON)
+    .then(res => res.json())
+    .then(data => {
+        listaUsuariosJson = data;
+    })
+}
+
+obtenerUsuarios()
+
 if(localStorage.getItem("usuarios")) {
     listaUsuarios = JSON.parse(localStorage.getItem("usuarios"))
 }
@@ -30,7 +43,7 @@ botonRegistroUsuario.onclick = () => {
             title: 'Error!',
             text: 'Ingrese todos los datos solicitados',
             icon: 'error',
-            confirmButtonText: 'Continuar'
+            confirmButtonText: 'Intentar nuevamente'
         })    
         return;
     }
@@ -43,7 +56,7 @@ botonRegistroUsuario.onclick = () => {
             title: 'Error!',
             text: 'Los passwords deben coincidir',
             icon: 'error',
-            confirmButtonText: 'Continuar'
+            confirmButtonText: 'Intentar nuevamente'
         }) 
         return;
         
@@ -54,7 +67,7 @@ botonRegistroUsuario.onclick = () => {
             title: 'Error!',
             text: `El usuario ${usuario.email} ya existe`,
             icon: 'error',
-            confirmButtonText: 'Continuar'
+            confirmButtonText: 'Intentar nuevamente'
         }) 
         return;
     }
@@ -70,7 +83,19 @@ botonRegistroUsuario.onclick = () => {
 }
 
 function validarUsuario(usuario) {
-    return listaUsuarios.find((item) => item.email === usuario.email);
+    let usuarioTemporal = null;
+
+    let usuariosLocal = listaUsuarios.find((item) => item.email === usuario.email);
+    let usuariosJson = listaUsuariosJson.find((item) => item.email === usuario.email);
+
+    if (usuariosLocal){
+        usuarioTemporal = usuariosLocal;
+    }
+
+    if (usuariosJson){
+        usuarioTemporal = usuariosJson;
+    }
+    return usuarioTemporal;
 }
 
 
@@ -82,42 +107,49 @@ botonLogin.onclick = () => {
         password: passwordLogin.value
     }
 
-    const validar = validarUsuario(usuario);
-    console.log(validar);
+    const usuarioLocal = validarUsuario(usuario);
+    console.log(usuarioLocal);
 
     if (listaUsuarios.length === 0) {
         Swal.fire({
             title: 'Error!',
             text: "No hay usuario registrado",
             icon: 'error',
-            confirmButtonText: 'Continuar'
+            confirmButtonText: 'Intentar nuevamente'
         })
         return;
     }
 
-    if (!validar) {
+    if (!usuarioLocal) {
         Swal.fire({
             title: 'Error!',
             text: `El usuario ${usuario.email} no existe`,
             icon: 'error',
-            confirmButtonText: 'Continuar'
+            confirmButtonText: 'Intentar nuevamente'
         })
         return;
     }
 
-    if (validar.password !== usuario.password) {
+    if (usuarioLocal.password !== usuario.password) {
         Swal.fire({
             title: 'Error!',
             text: `El password es incorrecto`,
             icon: 'error',
-            confirmButtonText: 'Continuar'
+            confirmButtonText: 'Intentar nuevamente'
         })
         return;
     }
 
-    localStorage.setItem("usuarioActual", JSON.stringify(usuario))
-
-    window.location.href = "../index.html";
+    Swal.fire({
+        text: `Hola ${usuarioLocal.nombre}`,
+        icon: 'success',
+        confirmButtonText: 'Continuar'
+    })
+    .then(()=> {
+        delete usuarioLocal.password
+        localStorage.setItem("usuarioActual", JSON.stringify(usuarioLocal))
+        window.location.href = "../index.html";
+    })
 }
 
 
